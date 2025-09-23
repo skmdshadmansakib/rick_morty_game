@@ -17,7 +17,7 @@ This is a Python implementation of a provably fair game inspired by Rick & Morty
 
 ## Features / Rules Compliance
 
-✅ **Separate classes/files** for modular design:  
+**Separate classes/files** for modular design:  
 - `key_manager.py` – handles cryptographic key generation.  
 - `provably_fair.py` – implements HMAC-based provably fair number generation.  
 - `game_statistics.py` – accumulates game stats and calculates probabilities.  
@@ -28,16 +28,16 @@ This is a Python implementation of a provably fair game inspired by Rick & Morty
 - `main.py` – entry point.  
 - `game.py` – contains the main game loop.  
 
-✅ **HMAC fairness** – the key and message (Morty number) are used to generate HMAC before Rick makes a selection.  
+**HMAC fairness** – the key and message (Morty number) are used to generate HMAC before Rick makes a selection.  
 
-✅ **Command-line validation** – incorrect usage handled:  
+**Command-line validation** – incorrect usage handled:  
 - No arguments → shows usage example.  
 - Only one argument → shows usage.  
 - Non-existent Morty class → shows import error.  
 
-✅ **Statistics and probabilities** – calculated per Morty behavior (switch/stay).  
+**Statistics and probabilities** – calculated per Morty behavior (switch/stay).  
 
-✅ **ASCII table output** – game statistics displayed nicely using `tabulate`.
+**ASCII table output** – game statistics displayed nicely using `tabulate`.
 
 ---
 
@@ -46,7 +46,7 @@ This is a Python implementation of a provably fair game inspired by Rick & Morty
 - Python 3.10+
 - `tabulate` library
 
-`bash
+bash
 pip install -r requirements.txt
 
 ## **Usage**
