@@ -75,7 +75,7 @@ python main.py 3 morties.fake_morty.FakeMorty  # non-existent class
 7. Game statistics table is updated.
 
 ## **Video Demonstration**
-![task4 Terminal](https://streamable.com/e/sh9m5h)
+https://streamable.com/e/sh9m5h
 
 ## **GitHub Repository**
 https://github.com/skmdshadmansakib/rick_morty_game
