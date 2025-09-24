@@ -1,48 +1,70 @@
-from provably_fair import ProvablyFair
 from game_statistics import GameStatistics
+from provably_fair import ProvablyFair
 
 class Game:
-    def __init__(self, num_boxes, morty_instance):
+    def __init__(self, num_boxes, MortyClass):
         self.num_boxes = num_boxes
-        self.morty = morty_instance
-        self.stats = GameStatistics()
-
-    def get_valid_input(self, prompt, min_val, max_val):
-        while True:
-            try:
-                value = int(input(prompt))
-                if value < min_val or value >= max_val:
-                    print(f"Error: number must be between {min_val} and {max_val-1}")
-                    continue
-                return value
-            except ValueError:
-                print("Error: please enter a valid integer.")
+        self.morty = MortyClass
+        self.stats = GameStatistics()  # Fix: removed num_boxes argument
 
     def play(self):
+        round_number = 1
         while True:
-            print(f"Morty: Oh geez, Rick, I'm gonna hide your portal gun in one of the {self.num_boxes} boxes!")
-            fair = ProvablyFair(self.num_boxes)
-            print(f"Morty: HMAC1={fair.get_hmac()}")
+            print(f"\n=== New Round ===")
+            pf = ProvablyFair(self.num_boxes)
+            print(f"Morty: HMAC1={pf.get_hmac()}")
+            
+            # Rick chooses a number
+            while True:
+                try:
+                    choice = int(input(f"Rick, enter your number (0–{self.num_boxes-1}): "))
+                    if 0 <= choice < self.num_boxes:
+                        break
+                    else:
+                        print(f"Error: number must be between 0 and {self.num_boxes-1}")
+                except ValueError:
+                    print("Error: please enter a valid integer")
+            
+            morty_number, key, gun_location = pf.reveal()
+            print(f"Morty's number is {morty_number}, KEY={key}, final={gun_location}")
 
-            rick_value = self.get_valid_input("Rick, enter your number: ", 0, self.num_boxes)
-            morty_value, key = fair.reveal()
-            final_value = (morty_value + rick_value) % self.num_boxes
+            while True:
+                try:
+                    guess = int(input(f"What's your guess (0–{self.num_boxes-1}): "))
+                    if 0 <= guess < self.num_boxes:
+                        break
+                    else:
+                        print(f"Error: number must be between 0 and {self.num_boxes-1}")
+                except ValueError:
+                    print("Error: please enter a valid integer")
 
-            print(f"Morty's number is {morty_value}, KEY={key.hex()}, final={final_value}")
-            guess = self.get_valid_input("What's your guess: ", 0, self.num_boxes)
+            while True:
+                try:
+                    switch = int(input("Rick, switch (0) or stay (1)? "))
+                    if switch in [0, 1]:
+                        break
+                    else:
+                        print("Error: enter 0 to switch or 1 to stay")
+                except ValueError:
+                    print("Error: enter 0 or 1")
 
-            available_boxes = self.morty.remove_boxes(final_value, guess)
-            print(f"Morty: Available boxes: {available_boxes}")
+            # Determine outcome
+            if switch == 0:
+                rick_choice = [i for i in range(self.num_boxes) if i != guess and i != gun_location][0]
+            else:
+                rick_choice = guess
 
-            switch = self.get_valid_input("Rick, switch (0) or stay (1)? ", 0, 2)
-            won = final_value == guess if switch else final_value != guess
-            self.stats.add_result(switched=(switch==0), won=won)
+            if rick_choice == gun_location:
+                print("Rick found the portal gun! 🎉")
+                won = True
+            else:
+                print("Rick failed! Morty tricked him. 😢")
+                won = False
 
-            print(f"Morty: {'You won!' if won else 'You lost!'}")
+            self.stats.record(switched=(switch == 0), won=won)
 
-            cont = input("Morty: Play another round? (y/Y or n/N)? ").lower()
-            if cont != 'y':
+            cont = input("Play another round? (y=1/n=0)? ")
+            if cont != "1":
                 break
 
-        self.stats.print_table()
-        print("Morty: Okay… uh, bye!")
+        self.stats.show()
