@@ -11,6 +11,11 @@ def main():
     if len(sys.argv) != 3:
         print(f"Usage: python {sys.argv[0]} <num_boxes> <morty_class>")
         print(f"Allowed Mortys: {ALLOWED_MORTYS}")
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python main.py <num_boxes> <Morty class path>")
+
         return
 
     try:
@@ -20,6 +25,7 @@ def main():
         return
 
     morty_class_path = sys.argv[2]
+
     if morty_class_path not in ALLOWED_MORTYS:
         print(f"Error: Invalid Morty class. Choose one of {ALLOWED_MORTYS}")
         return
@@ -41,6 +47,11 @@ def main():
 
     # Show final stats
     game.stats.display()
+
+    MortyClass = MortyLoader.load(morty_class_path, num_boxes)
+    game = Game(num_boxes, MortyClass)
+    game.play()
+
 
 if __name__ == "__main__":
     main()
